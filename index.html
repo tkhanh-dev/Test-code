@@ -4,16 +4,17 @@
   <meta charset="UTF-8">
   <title>Video Fetcher</title>
   <style>
-    body { text-align: center; padding: 20px; }
-    input { padding: 5px; margin: 5px; }
-    button { padding: 5px 10px; }
-    #result { color: green; }
-    #error { color: red; }
+    body { text-align: center; padding: 20px; font-family: Arial, sans-serif; }
+    input { padding: 5px; margin: 5px; width: 250px; }
+    button { padding: 5px 10px; background: #4CAF50; color: white; border: none; cursor: pointer; }
+    button:hover { background: #45a049; }
+    #result { color: #2196F3; margin-top: 10px; }
+    #error { color: #f44336; margin-top: 10px; }
   </style>
 </head>
 <body>
   <h2>Video Fetcher</h2>
-  <input type="text" id="videoUrl" placeholder="Enter video URL">
+  <input type="text" id="videoUrl" placeholder="Enter video URL (e.g., YouTube link)">
   <button onclick="fetchVideo()">Fetch</button>
   <p id="result"></p>
   <p id="error"></p>
@@ -24,6 +25,14 @@
       const result = document.getElementById('result');
       const error = document.getElementById('error');
 
+      if (!videoUrl) {
+        error.textContent = 'Please enter a video URL';
+        return;
+      }
+
+      result.textContent = 'Loading...';
+      error.textContent = '';
+
       try {
         const response = await fetch('http://localhost:3001/api/fetch-video', {
           method: 'POST',
@@ -33,7 +42,9 @@
         const data = await response.json();
         if (data.error) throw new Error(data.error);
         result.textContent = `Video Link: ${data.videoLink}`;
-        error.textContent = '';
+        if (data.videoLink.startsWith('http')) {
+          result.innerHTML = `Video Link: <a href="${data.videoLink}" target="_blank">${data.videoLink}</a>`;
+        }
       } catch (err) {
         error.textContent = `Error: ${err.message}`;
         result.textContent = '';
