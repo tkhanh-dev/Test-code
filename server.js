@@ -1,7 +1,7 @@
 const express = require('express');
 const fetch = require('node-fetch');
 const app = express();
-const port = 3001;
+const port = 3030;
 
 app.use(express.json());
 
