@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Video Fetcher</title>
+  <style>
+    body { text-align: center; padding: 20px; }
+    input { padding: 5px; margin: 5px; }
+    button { padding: 5px 10px; }
+    #result { color: green; }
+    #error { color: red; }
+  </style>
+</head>
+<body>
+  <h2>Video Fetcher</h2>
+  <input type="text" id="videoUrl" placeholder="Enter video URL">
+  <button onclick="fetchVideo()">Fetch</button>
+  <p id="result"></p>
+  <p id="error"></p>
+
+  <script>
+    async function fetchVideo() {
+      const videoUrl = document.getElementById('videoUrl').value;
+      const result = document.getElementById('result');
+      const error = document.getElementById('error');
+
+      try {
+        const response = await fetch('http://localhost:3001/api/fetch-video', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ videoUrl })
+        });
+        const data = await response.json();
+        if (data.error) throw new Error(data.error);
+        result.textContent = `Video Link: ${data.videoLink}`;
+        error.textContent = '';
+      } catch (err) {
+        error.textContent = `Error: ${err.message}`;
+        result.textContent = '';
+      }
+    }
+  </script>
+</body>
+</html>
